@@ -1,16 +1,16 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { SessionProvider ,useSession, signOut,  } from 'next-auth/react';
+import { SessionProvider, useSession, signOut } from 'next-auth/react';
 import React, { useState, useEffect } from "react";
-import "./quiz.css"; 
+import "./quiz.css";
 import Background from "./Background";
 
 type Question = {
   question: string;
   options: string[];
   answer: string;
-  level: number; 
+  level: number;
 };
 
 const quizData: Question[] = [
@@ -29,17 +29,17 @@ const quizData: Question[] = [
 ];
 
 const Quiz: React.FC = () => {
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); 
-  const [selectedOption, setSelectedOption] = useState<string | null>(null); 
-  const [score, setScore] = useState(0); 
-  const [timeLeft, setTimeLeft] = useState(0); 
-  const [timeSaved, setTimeSaved] = useState(0); 
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [score, setScore] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [timeSaved, setTimeSaved] = useState(0);
 
   const { data: session } = useSession();
-  const currentQuestion = quizData[currentQuestionIndex]; 
+  const currentQuestion = quizData[currentQuestionIndex];
 
   useEffect(() => {
-    if (!currentQuestion) return; 
+    if (!currentQuestion) return;
 
     const timeForLevel = currentQuestion.level === 1 ? 15 : currentQuestion.level === 2 ? 25 : 35;
     setTimeLeft(timeForLevel);
@@ -48,28 +48,28 @@ const Quiz: React.FC = () => {
       setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
 
-    return () => clearInterval(timer); // Clear the timer on question or component change
+    return () => clearInterval(timer);
   }, [currentQuestionIndex, currentQuestion]);
 
   const handleOptionClick = (option: string) => {
-    setSelectedOption(option); // Set the selected option
+    setSelectedOption(option);
   };
 
   const handleNextQuestion = () => {
     if (selectedOption === currentQuestion?.answer) {
-      setScore(score + 1); // Increment score if the answer is correct
-      setTimeSaved(timeSaved + timeLeft); // Add remaining time to timeSaved if correct
+      setScore(score + 1);
+      setTimeSaved(timeSaved + timeLeft);
     }
 
-    setSelectedOption(null); // Reset selected option
-    setCurrentQuestionIndex(currentQuestionIndex + 1); // Move to the next question
+    setSelectedOption(null);
+    setCurrentQuestionIndex(currentQuestionIndex + 1);
   };
 
   const downloadScore = () => {
     const scoreData = {
       name: session?.user?.name,
       enrollmentNumber: session?.user?.id,
-      totalScore: (score * 10) + timeSaved, // Example score formula
+      totalScore: (score * 10) + timeSaved,
       correctAnswers: score,
       totalQuestions: quizData.length,
       totalTimeSaved: timeSaved,
@@ -91,11 +91,9 @@ const Quiz: React.FC = () => {
       <>
         <Background />
         <div className="quiz-container">
-          <div className="quiz-background" /> 
-           
+          <div className="quiz-background" />
           <div className="quiz-content">
             <h1 className="quiz-title">Quiz</h1>
-
             {currentQuestionIndex < quizData.length ? (
               <div>
                 <h2 className="quiz-question">{currentQuestion.question}</h2>
@@ -143,6 +141,6 @@ const Quiz: React.FC = () => {
       </>
     </SessionProvider>
   );
-}
+};
 
 export default Quiz;
