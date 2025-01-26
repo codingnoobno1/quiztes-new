@@ -1,15 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation'; // Use next/navigation for Next.js 13+ navigation
+import { useRouter } from 'next/navigation';
 
-// Define the form state type
 interface FormData {
   name: string;
   enrollmentNumber: string;
   course: string;
   semester: string;
-  email: string; // Added email to the form state
+  email: string;
   password: string;
   confirmPassword: string;
 }
@@ -20,15 +19,14 @@ const RegisterPage = () => {
     enrollmentNumber: '',
     course: '',
     semester: '',
-    email: '', // Initialize email field
+    email: '',
     password: '',
     confirmPassword: '',
   });
 
-  const [error, setError] = useState<string>(''); // Error message state
+  const [error, setError] = useState<string>('');
   const router = useRouter();
 
-  // Handle input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
@@ -36,28 +34,22 @@ const RegisterPage = () => {
     });
   };
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Reset previous error state
     setError('');
 
-    // Validate email format
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(formData.email)) {
       setError('Please enter a valid email address');
       return;
     }
 
-    // Validate password match
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return;
     }
 
     try {
-      // Send form data to the API
       const response = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -70,8 +62,7 @@ const RegisterPage = () => {
         return;
       }
 
-      // On successful registration, redirect to a success page
-      router.push('/success'); // Replace with your desired success route
+      router.push('/success');
     } catch (error) {
       console.error('Error submitting form:', error);
       setError('An unexpected error occurred');
@@ -166,7 +157,6 @@ const RegisterPage = () => {
           />
         </div>
 
-        {/* Display error message if validation fails */}
         {error && <p style={{ color: 'red' }}>{error}</p>}
 
         <button type="submit">Register</button>

@@ -1,4 +1,4 @@
-'use client'; // Mark this file as a client component
+'use client';
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -6,16 +6,14 @@ import { useSession, signOut, SessionProvider } from 'next-auth/react';
 
 function Welcome() {
   const router = useRouter();
-  const { data: session, status } = useSession(); // Reactively monitor session state
+  const { data: session, status } = useSession();
 
-  // Redirect based on session status
   useEffect(() => {
     if (status === 'unauthenticated') {
-      router.push('/login'); // Redirect to login if not authenticated
+      router.push('/login');
     }
   }, [status, router]);
 
-  // Logout handler
   const handleLogout = async () => {
     await signOut();
     router.push('/login');
@@ -25,7 +23,6 @@ function Welcome() {
     <div className="h-screen flex flex-col items-center justify-center bg-gradient-to-tl from-green-900 via-black to-transparent">
       {status === 'authenticated' && session?.user ? (
         <div className="flex flex-col items-center space-y-6">
-          {/* User Information Card */}
           <div className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
             <h1 className="text-4xl text-black font-bold mb-4">
               Welcome, {session.user.name || 'User'}!
@@ -43,8 +40,6 @@ function Welcome() {
               Logout
             </button>
           </div>
-
-          {/* Quiz Card */}
           <div className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
             <h2 className="text-3xl text-black font-bold mb-4">KBC Quiz</h2>
             <img src="/kbc.jpg" alt="KBC" className="w-full h-auto rounded-lg shadow-md mb-4" />
@@ -63,7 +58,6 @@ function Welcome() {
   );
 }
 
-// Wrap Welcome in SessionProvider
 export default function App() {
   return (
     <SessionProvider>

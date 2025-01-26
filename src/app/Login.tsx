@@ -8,13 +8,13 @@ export default function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false); // Loading state for button
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true); // Start loading
-    setError(''); // Clear previous error
+    setLoading(true);
+    setError('');
 
     const res = await signIn('credentials', {
       redirect: false,
@@ -22,12 +22,11 @@ export default function SignIn() {
       password,
     });
 
-    setLoading(false); // Stop loading
+    setLoading(false);
 
     if (res?.error) {
       setError('Invalid credentials. Please try again.');
     } else {
-      // Redirect to the dashboard dynamically based on the email prefix
       router.push(`/dashboard/${email.split('@')[0]}`);
     }
   };
